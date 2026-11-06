@@ -33,10 +33,12 @@ src/KeywordLab.Core            순수 로직. 외부 의존성 없음.
   Models/                      VolumeCount, KeywordVolume, BlogSearchSummary
   Text/                        KeywordNormalizer, CandidateGenerator (조사 제거 + 단어 조합)
   Assessment/                  CompetitionAssessor, AssessmentRules (경쟁도 기준값)
-  Abstractions/                IKeywordVolumeProvider, IBlogSearchProvider
-  Services/                    KeywordLookupService (키워드 직접 조회 흐름)
+  Abstractions/                IKeywordVolumeProvider, IBlogSearchProvider, ITitleGenerator(교체 가능), IHandoffLog
+  Titles/                      TemplateTitleGenerator, TitleScorer(플랫폼별 규칙 점수), IntentKeywordExtractor, CodexBlockBuilder
+  Services/                    KeywordLookupService (키워드 직접 조회), TitleWorkshopService (주제·제목 확정)
 src/KeywordLab.Infrastructure  외부 API 연동
   Naver/                       검색광고 API(HMAC 서명), 블로그 검색 API, 응답 파서
+  Storage/                     SqliteHandoffLog (Codex로 넘긴 기록, %LOCALAPPDATA%KeywordLabkeywordlab.db)
 src/KeywordLab.Web             Razor Pages 화면
 tests/KeywordLab.Tests         xUnit
 ```

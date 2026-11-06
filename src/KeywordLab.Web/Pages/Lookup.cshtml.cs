@@ -1,4 +1,3 @@
-using System.Net;
 using KeywordLab.Core.Assessment;
 using KeywordLab.Core.Services;
 using KeywordLab.Infrastructure.Naver;
@@ -60,25 +59,16 @@ public class LookupModel : PageModel
         catch (NaverApiException ex)
         {
             _logger.LogWarning(ex, "네이버 API 오류");
-            ErrorMessage = ex.StatusCode switch
-            {
-                HttpStatusCode.Unauthorized or HttpStatusCode.Forbidden =>
-                    $"{ex.Api}: 인증에 실패했습니다. 사용자 비밀의 키 값을 확인하세요. 블로그 검색이라면 NAVER API HUB Application에서 받은 Client ID·Secret인지(개발자센터 키는 안 됨), 사용 API에 '검색 - 블로그'가 들어 있는지도 확인하세요.",
-                HttpStatusCode.TooManyRequests =>
-                    $"{ex.Api}: 호출 한도를 넘었습니다. 잠시 후 다시 조회하세요.",
-                HttpStatusCode.BadRequest =>
-                    $"{ex.Api}: 요청 형식이 거부되었습니다. 응답: {ex.ResponseSnippet}",
-                _ => ex.Message,
-            };
+            ErrorMessage = NaverErrorMessages.For(ex);
         }
         catch (HttpRequestException ex)
         {
             _logger.LogWarning(ex, "네트워크 오류");
-            ErrorMessage = "네이버 서버에 연결하지 못했습니다. 인터넷 연결을 확인한 뒤 다시 조회하세요.";
+            ErrorMessage = NaverErrorMessages.Network;
         }
         catch (TaskCanceledException) when (!cancellationToken.IsCancellationRequested)
         {
-            ErrorMessage = "네이버 응답이 너무 늦어 조회를 멈췄습니다. 다시 조회하세요.";
+            ErrorMessage = NaverErrorMessages.Timeout;
         }
     }
 
