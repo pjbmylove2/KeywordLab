@@ -32,7 +32,15 @@ public static class ServiceCollectionExtensions
         services.AddScoped<KeywordLookupService>();
 
         var titleRules = configuration.GetSection(TitleScoringRules.SectionName).Get<TitleScoringRules>() ?? new TitleScoringRules();
-        services.AddSingleton(new TitleScorer(titleRules));
+        services.AddSingleton(titleRules);
+        services.AddSingleton<ISettingsStore, JsonSettingsStore>();
+        // 금지 표현은 설정 화면에서 바뀌므로 요청마다 settings.json 값을 읽어 점수기를 만든다.
+        services.AddScoped(sp => new TitleScorer(new TitleScoringRules
+        {
+            BannedPhrases = sp.GetRequiredService<ISettingsStore>().Load().Settings.BannedPhrases,
+            TistoryMaxLength = titleRules.TistoryMaxLength,
+            MaxSpecialChars = titleRules.MaxSpecialChars,
+        }));
         services.AddSingleton<ITitleGenerator, TemplateTitleGenerator>();
         services.AddScoped<TitleWorkshopService>();
         services.AddSingleton<IHandoffLog, SqliteHandoffLog>();

@@ -75,6 +75,9 @@
 
 - 3-1: 수집기(구글 트렌드 RSS·네이버 자동완성) + 키워드 점수 + 오늘의 이슈 키워드 화면. 카테고리는 appsettings.json 임시값.
 - 3-2: 설정 화면 (블로그별 허용 카테고리, 금지 표현 편집).
+  - 설정 화면 값은 `%LOCALAPPDATA%\KeywordLab\settings.json`(DB와 같은 폴더)에 저장한다. appsettings.json에 쓰면 개인 설정이 공개 저장소에 올라가기 때문이다.
+  - settings.json이 없거나 깨졌으면 appsettings.json의 `Blogs`·`Titles:BannedPhrases`를 기본값으로 쓴다.
+  - 카테고리 입력은 한 줄에 하나, `카테고리 이름: 단어, 단어`.
 
 ## 자동 모드 키워드 점수
 

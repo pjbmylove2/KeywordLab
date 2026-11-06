@@ -1,10 +1,85 @@
 @page
+@using KeywordLab.Core.Titles
 @model SettingsModel
 @{
     ViewData["Title"] = "설정";
 }
-@if (!string.IsNullOrWhiteSpace(Model.Keyword))
-{
-    <div class="kl-alert is-info" role="status">선택한 키워드: <strong>@Model.Keyword</strong></div>
-}
-<partial name="_Upcoming" model="@(new KeywordLab.Web.Pages.Shared.UpcomingModel(3, "블로그별 규칙", "설정", "블로그별 허용 카테고리와 제목 금지 표현을 관리합니다."))" />
+<section class="kl-section">
+    <div class="kl-head">
+        <span class="kl-eyebrow">// 블로그별 규칙</span>
+        <h1 class="kl-h1">설정</h1>
+        <p class="kl-lead">블로그별 허용 카테고리와 제목 금지 표현을 관리합니다. 저장 위치: <code class="kl-mono">@Model.Location</code> (저장소 밖이라 GitHub에 올라가지 않습니다)</p>
+    </div>
+
+    @if (Model.Saved)
+    {
+        <div class="kl-alert is-info" role="status">저장했습니다. 오늘의 이슈 키워드와 제목 점수에 바로 적용됩니다.</div>
+    }
+
+    @if (Model.LoadError is not null)
+    {
+        <div class="kl-alert is-error" role="alert">@Model.LoadError</div>
+    }
+    else if (Model.IsDefault)
+    {
+        <div class="kl-alert is-info" role="status">아직 저장한 설정이 없어 appsettings.json의 기본값을 보여줍니다. 저장하면 이 화면 값을 씁니다.</div>
+    }
+
+    @if (Model.Errors.Count > 0)
+    {
+        <div class="kl-alert is-error" role="alert">
+            <p><strong>저장하지 않았습니다. 아래를 고친 뒤 다시 저장하세요.</strong></p>
+            <ul>
+                @foreach (var e in Model.Errors)
+                {
+                    <li>@e</li>
+                }
+            </ul>
+        </div>
+    }
+
+    <form method="post">
+        <h2 class="kl-h2">블로그별 허용 카테고리</h2>
+        <p class="kl-muted">
+            한 줄에 카테고리 하나, <code class="kl-mono">카테고리 이름: 단어, 단어</code> 형식으로 적습니다.
+            키워드·자동완성어·관련 뉴스 제목에 단어가 들어 있으면 그 카테고리로 보고, 어디에도 안 걸리면 흐리게 표시합니다.
+            네이버는 C-Rank 주제 일관성 때문에 좁게 잡으세요. 블로그를 지우려면 이름과 카테고리를 모두 비웁니다.
+        </p>
+
+        @for (var i = 0; i < Model.BlogInputs.Count; i++)
+        {
+            var isNew = string.IsNullOrWhiteSpace(Model.BlogInputs[i].Name) && string.IsNullOrWhiteSpace(Model.BlogInputs[i].Categories);
+            <fieldset class="kl-panel kl-fieldset">
+                <legend class="kl-small-title">@(isNew ? "새 블로그 추가" : $"블로그 {i + 1}")</legend>
+                <div class="kl-field-row">
+                    <label>
+                        <span class="kl-small-title">이름</span>
+                        <input class="kl-input" name="BlogInputs[@i].Name" value="@Model.BlogInputs[i].Name" maxlength="50" placeholder="예: 티스토리 이슈 블로그" />
+                    </label>
+                    <label>
+                        <span class="kl-small-title">플랫폼</span>
+                        <select class="kl-input" name="BlogInputs[@i].Platform">
+                            @foreach (var p in new[] { BlogPlatform.Tistory, BlogPlatform.Naver })
+                            {
+                                <option value="@p" selected="@(Model.BlogInputs[i].Platform == p)">@TitleLabels.Of(p)</option>
+                            }
+                        </select>
+                    </label>
+                </div>
+                <label>
+                    <span class="kl-small-title">허용 카테고리</span>
+                    <textarea class="kl-textarea" name="BlogInputs[@i].Categories" rows="4" maxlength="@SettingsModel.MaxTextLength"
+                              placeholder="생활정보: 요금, 할인, 지원금, 신청&#10;경제: 금리, 부동산, 환율">@Model.BlogInputs[i].Categories</textarea>
+                </label>
+            </fieldset>
+        }
+
+        <h2 class="kl-h2">제목 금지 표현</h2>
+        <p class="kl-muted">제목에 들어가면 크게 감점합니다 (티스토리·네이버 공통). 쉼표나 줄바꿈으로 구분합니다.</p>
+        <textarea class="kl-textarea" name="BannedPhrases" rows="3" maxlength="@SettingsModel.MaxTextLength" aria-label="제목 금지 표현">@Model.BannedPhrases</textarea>
+
+        <div class="kl-card-actions">
+            <button type="submit" class="kl-btn kl-btn-primary">저장</button>
+        </div>
+    </form>
+</section>
