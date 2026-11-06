@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <ItemGroup>
+    <ProjectReference Include="..\KeywordLab.Core\KeywordLab.Core.csproj" />
+    <ProjectReference Include="..\KeywordLab.Infrastructure\KeywordLab.Infrastructure.csproj" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>keywordlab-web-5c1e2a7d-6f3b-4c8e-9a21-0d4b7e3f8a19</UserSecretsId>
+  </PropertyGroup>
+
+</Project>

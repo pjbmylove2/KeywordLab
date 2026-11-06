@@ -1,0 +1,10 @@
+@page
+@model TrendModel
+@{
+    ViewData["Title"] = "트렌드 보기";
+}
+@if (!string.IsNullOrWhiteSpace(Model.Keyword))
+{
+    <div class="kl-alert is-info" role="status">선택한 키워드: <strong>@Model.Keyword</strong></div>
+}
+<partial name="_Upcoming" model="@(new KeywordLab.Web.Pages.Shared.UpcomingModel(4, "네이버 데이터랩 추이 + 구글 관련 뉴스", "트렌드 보기", "하루 만에 사라질 이슈인지, 며칠 이어질 이슈인지 판단하는 화면입니다."))" />

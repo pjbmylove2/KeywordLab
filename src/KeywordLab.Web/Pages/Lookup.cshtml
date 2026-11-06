@@ -1,0 +1,134 @@
+@page
+@model LookupModel
+@{
+    ViewData["Title"] = "키워드 직접 조회";
+}
+<section class="kl-section">
+    <div class="kl-head">
+        <span class="kl-eyebrow">// 쓰고 싶은 주제로 시작</span>
+        <h1 class="kl-h1">키워드 직접 조회</h1>
+        <p class="kl-lead">주제를 문장으로 적으면 단어 조합으로 키워드 후보를 만들고, 네이버 월간 검색량과 블로그 문서 수를 붙여 보여줍니다.</p>
+    </div>
+
+    @if (Model.MissingSettings.Count > 0)
+    {
+        <div class="kl-alert is-error" role="alert">
+            <p><strong>네이버 API 키가 아직 설정되지 않았습니다.</strong> 솔루션 탐색기에서 KeywordLab.Web 프로젝트를 우클릭하고 "사용자 비밀 관리"를 눌러 아래 형식으로 넣으세요.</p>
+            <p>비어 있는 항목: @string.Join(", ", Model.MissingSettings)</p>
+            <pre class="kl-pre">{
+  "Naver": {
+    "SearchAd": { "CustomerId": "", "AccessLicense": "", "SecretKey": "" },
+    "OpenApi":  { "ClientId": "", "ClientSecret": "" }
+  }
+}</pre>
+        </div>
+    }
+
+    <form class="kl-panel kl-search" method="get" id="kl-lookup-form">
+        <label for="kl-topic">주제</label>
+        <div class="kl-search-row">
+            <input id="kl-topic" name="q" type="text" class="kl-input" value="@Model.Query"
+                   maxlength="@LookupModel.MaxTopicLength" placeholder="예: 겨울철 전기요금 아끼는 법" autocomplete="off" required />
+            <button type="submit" class="kl-btn kl-btn-primary" id="kl-lookup-btn">조회</button>
+        </div>
+    </form>
+
+    @if (Model.ErrorMessage is not null)
+    {
+        <div class="kl-alert is-error" role="alert">@Model.ErrorMessage</div>
+    }
+
+    @if (Model.Result is { } result)
+    {
+        @if (result.Candidates.Count == 0)
+        {
+            <div class="kl-empty">
+                <p>검색량이 잡히는 키워드 후보를 찾지 못했습니다. 더 짧은 명사 위주로 다시 적어 보세요. (예: "전기요금 할인")</p>
+            </div>
+        }
+        else
+        {
+            <h2 class="kl-h2">키워드 후보</h2>
+            <div class="kl-grid">
+                @foreach (var c in result.Candidates)
+                {
+                    <article class="kl-card">
+                        <span class="@LookupModel.TagClass(c.Assessment.Level)">@c.Assessment.Label</span>
+                        <h3 class="kl-card-title">@c.Keyword</h3>
+                        <dl class="kl-stats">
+                            <div><dt>월 검색</dt><dd class="kl-mono">@c.Volume.TotalDisplay</dd></div>
+                            <div><dt>PC / 모바일</dt><dd class="kl-mono">@c.Volume.Pc / @c.Volume.Mobile</dd></div>
+                            <div><dt>블로그 문서</dt><dd class="kl-mono">@c.Blog.Total.ToString("N0")</dd></div>
+                        </dl>
+                        <p class="kl-reason">@c.Assessment.Reason</p>
+                        @if (c.Blog.TopPosts.Count > 0)
+                        {
+                            <div class="kl-competitors">
+                                <span class="kl-small-title">상위 블로그 글</span>
+                                <ol>
+                                    @foreach (var p in c.Blog.TopPosts)
+                                    {
+                                        <li><a href="@p.Link" target="_blank" rel="noopener noreferrer">@p.Title</a></li>
+                                    }
+                                </ol>
+                            </div>
+                        }
+                        <div class="kl-card-actions">
+                            <a class="kl-btn" href="/Trend?kw=@Uri.EscapeDataString(c.Keyword)">트렌드</a>
+                            <a class="kl-btn kl-btn-primary" href="/Titles?kw=@Uri.EscapeDataString(c.Keyword)">제목 정하기</a>
+                        </div>
+                    </article>
+                }
+            </div>
+        }
+
+        @if (result.Related.Count > 0)
+        {
+            <h2 class="kl-h2">연관 키워드</h2>
+            <p class="kl-muted">네이버 검색광고 키워드 도구가 추천한 키워드입니다. 띄어쓰기 없이 표시됩니다. 광고 경쟁은 블로그 경쟁과 다른 지표입니다.</p>
+            <div class="kl-table-wrap">
+                <table class="kl-table">
+                    <thead>
+                        <tr>
+                            <th scope="col">키워드</th>
+                            <th scope="col" class="is-num">PC</th>
+                            <th scope="col" class="is-num">모바일</th>
+                            <th scope="col" class="is-num">합계</th>
+                            <th scope="col">광고 경쟁</th>
+                            <th scope="col"><span class="kl-sr">작업</span></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var r in result.Related)
+                        {
+                            <tr>
+                                <td>@r.Keyword</td>
+                                <td class="is-num kl-mono">@r.Pc</td>
+                                <td class="is-num kl-mono">@r.Mobile</td>
+                                <td class="is-num kl-mono">@r.TotalDisplay</td>
+                                <td>@(r.CompetitionIndex ?? "-")</td>
+                                <td class="is-num"><a href="/Lookup?q=@Uri.EscapeDataString(r.Keyword)">이걸로 조회</a></td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+
+        @if (result.NotFound.Count > 0)
+        {
+            <p class="kl-muted">검색량 데이터가 없는 후보: @string.Join(", ", result.NotFound)</p>
+        }
+    }
+</section>
+
+@section Scripts {
+    <script>
+        // 조회는 몇 초 걸릴 수 있어서, 누른 걸 알 수 있게 버튼 상태만 바꾼다.
+        document.getElementById('kl-lookup-form').addEventListener('submit', function () {
+            var btn = document.getElementById('kl-lookup-btn');
+            btn.disabled = true;
+            btn.textContent = '조회 중…';
+        });
+    </script>
+}

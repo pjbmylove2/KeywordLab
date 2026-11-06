@@ -1,0 +1,131 @@
+/*
+ * 키워드 랩 다크 테마
+ * 색상과 글꼴은 K-프로그래밍 블로그(k-program.tistory.com) 다크 스킨 값을 그대로 쓴다.
+ * 새 화면을 만들 때도 아래 변수만 사용한다.
+ */
+:root {
+  --bg: #262624;
+  --sub: #1f1e1d;
+  --line: #3e3d39;
+  --text: #f2f0e8;
+  --text2: #c9c6bc;
+  --muted: #a19e94;
+  --chip: #353431;
+  --accent: #d97757;
+  --accent-hover: #e8957a;
+  --accent-soft: #3a2c26;
+  --accent-text: #f0a58a;
+  --on-accent: #1f1e1d;
+  --code-bg: #1e1e1e;
+  --code-text: #dcdcdc;
+  --font: 'Nanum Gothic', 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif;
+  --mono: 'Nanum Gothic Coding', D2Coding, Consolas, monospace;
+  --radius: 10px;
+  color-scheme: dark;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 15px;
+  line-height: 1.7;
+  word-break: keep-all;
+  overflow-wrap: break-word;
+}
+
+a { color: var(--accent); text-decoration: none; }
+a:hover { color: var(--accent-hover); text-decoration: underline; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+.kl-skip { position: absolute; left: -9999px; }
+.kl-skip:focus { left: 16px; top: 8px; z-index: 50; padding: 8px 12px; background: var(--accent); color: var(--on-accent); border-radius: 6px; }
+.kl-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+/* 헤더 */
+.kl-header { border-bottom: 1px solid var(--line); }
+.kl-header-inner { max-width: 1360px; margin: 0 auto; padding: 14px 24px; display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; }
+.kl-logo { display: flex; align-items: center; gap: 10px; font-size: 19px; font-weight: 800; color: var(--text); }
+.kl-logo:hover { color: var(--text); text-decoration: none; }
+.kl-logo-mark { font-family: var(--mono); font-size: 14px; font-weight: 700; padding: 3px 7px; border-radius: 6px; background: var(--accent); color: var(--on-accent); }
+.kl-chip { font-size: 12px; font-weight: 700; padding: 2px 8px; border-radius: 6px; background: var(--chip); color: var(--text2); }
+
+/* 좌측 메뉴 + 본문 */
+.kl-shell { max-width: 1360px; margin: 0 auto; padding: 24px; display: flex; flex-wrap: wrap; align-items: flex-start; gap: 24px; }
+.kl-side { flex: 1 1 220px; max-width: 100%; display: flex; flex-direction: column; gap: 18px; }
+.kl-nav-group { display: flex; flex-direction: column; gap: 2px; }
+.kl-nav-title { padding: 0 12px 6px; font-size: 12px; font-weight: 700; color: var(--muted); }
+.kl-nav { display: flex; align-items: center; min-height: 44px; padding: 8px 12px; border-radius: 8px; color: var(--text2); }
+.kl-nav:hover { background: var(--sub); color: var(--text); text-decoration: none; }
+.kl-nav.is-active { background: var(--accent-soft); color: var(--accent); font-weight: 700; }
+.kl-main { flex: 999 1 560px; min-width: 0; }
+
+/* 제목 영역 */
+.kl-section { display: flex; flex-direction: column; gap: 18px; }
+.kl-head { display: flex; flex-direction: column; gap: 4px; }
+.kl-eyebrow { font-family: var(--mono); font-size: 14px; color: var(--accent); }
+.kl-h1 { margin: 0; font-size: 28px; font-weight: 800; line-height: 1.35; }
+.kl-h2 { margin: 12px 0 0; font-size: 19px; font-weight: 800; }
+.kl-lead { margin: 0; color: var(--text2); max-width: 70ch; }
+.kl-muted { margin: 0; color: var(--muted); font-size: 13px; }
+.kl-mono { font-family: var(--mono); }
+
+/* 입력 */
+.kl-panel { padding: 20px; border: 1px solid var(--line); border-radius: 12px; background: var(--sub); }
+.kl-search { display: flex; flex-direction: column; gap: 10px; }
+.kl-search label { font-size: 13px; font-weight: 700; color: var(--text2); }
+.kl-search-row { display: flex; flex-wrap: wrap; gap: 10px; }
+.kl-input { flex: 1 1 320px; min-width: 0; min-height: 44px; padding: 0 14px; border: 1px solid var(--line); border-radius: 8px; background: var(--bg); color: var(--text); font: inherit; }
+.kl-input::placeholder { color: var(--muted); }
+
+.kl-btn { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; padding: 0 16px; border-radius: 8px; border: 1px solid var(--line); background: var(--bg); color: var(--text); font: inherit; font-size: 14px; font-weight: 700; cursor: pointer; }
+.kl-btn:hover { border-color: var(--accent); color: var(--text); text-decoration: none; }
+.kl-btn-primary { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+.kl-btn-primary:hover { background: var(--accent-hover); border-color: var(--accent-hover); color: var(--on-accent); }
+.kl-btn:disabled { opacity: 0.6; cursor: progress; }
+
+/* 알림·빈 상태 */
+.kl-alert { padding: 14px 18px; border-radius: var(--radius); border: 1px solid var(--line); background: var(--sub); }
+.kl-alert p { margin: 0 0 8px; }
+.kl-alert.is-error { border-color: var(--accent); background: var(--accent-soft); }
+.kl-alert.is-info { color: var(--text2); }
+.kl-empty { padding: 28px; border: 1px dashed var(--line); border-radius: 12px; display: flex; flex-direction: column; align-items: flex-start; gap: 12px; color: var(--text2); }
+.kl-empty p { margin: 0; }
+.kl-pre { margin: 8px 0 0; padding: 14px; border-radius: 8px; background: var(--code-bg); color: var(--code-text); font-family: var(--mono); font-size: 13px; overflow-x: auto; }
+
+/* 후보 카드 */
+.kl-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; }
+.kl-card { padding: 18px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--bg); display: flex; flex-direction: column; gap: 10px; }
+.kl-card:hover { border-color: var(--accent); }
+.kl-card-title { margin: 0; font-size: 18px; font-weight: 800; line-height: 1.4; }
+.kl-tag { align-self: flex-start; font-family: var(--mono); font-size: 12px; font-weight: 700; padding: 1px 8px; border-radius: 4px; background: var(--chip); }
+.kl-tag.is-easy, .kl-tag.is-good { background: var(--accent-soft); color: var(--accent-text); }
+.kl-tag.is-high, .kl-tag.is-low { color: var(--muted); }
+.kl-stats { margin: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.kl-stats div { display: flex; flex-direction: column; }
+.kl-stats dt { font-size: 12px; color: var(--muted); }
+.kl-stats dd { margin: 0; font-size: 15px; font-weight: 700; }
+.kl-reason { margin: 0; font-size: 13px; color: var(--text2); }
+.kl-competitors { border-top: 1px solid var(--line); padding-top: 10px; }
+.kl-small-title { font-size: 12px; font-weight: 700; color: var(--muted); }
+.kl-competitors ol { margin: 4px 0 0; padding-left: 18px; font-size: 13px; }
+.kl-competitors a { color: var(--text2); }
+.kl-competitors a:hover { color: var(--accent); }
+.kl-card-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: auto; }
+
+/* 표 */
+.kl-table-wrap { border: 1px solid var(--line); border-radius: 12px; overflow-x: auto; }
+.kl-table { width: 100%; min-width: 640px; border-collapse: collapse; font-size: 14px; }
+.kl-table th { padding: 12px 14px; background: var(--sub); color: var(--muted); font-weight: 700; text-align: left; }
+.kl-table td { padding: 12px 14px; border-top: 1px solid var(--line); }
+.kl-table tr:hover td { background: #2c2b29; }
+.kl-table .is-num { text-align: right; white-space: nowrap; }
+
+@media (max-width: 640px) {
+  .kl-shell { padding: 16px; }
+  .kl-h1 { font-size: 24px; }
+  .kl-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}

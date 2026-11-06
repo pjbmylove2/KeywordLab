@@ -1,0 +1,12 @@
+@model KeywordLab.Web.Pages.Shared.UpcomingModel
+<section class="kl-section">
+    <div class="kl-head">
+        <span class="kl-eyebrow">// @Model.Eyebrow</span>
+        <h1 class="kl-h1">@Model.Title</h1>
+        <p class="kl-lead">@Model.Description</p>
+    </div>
+    <div class="kl-empty">
+        <p><strong>@(Model.Stage)단계</strong>에서 만들 화면입니다. 지금은 키워드 직접 조회를 사용하세요.</p>
+        <a class="kl-btn kl-btn-primary" href="/Lookup">키워드 직접 조회로 가기</a>
+    </div>
+</section>

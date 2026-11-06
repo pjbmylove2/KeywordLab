@@ -1,0 +1,10 @@
+@page
+@model TitlesModel
+@{
+    ViewData["Title"] = "주제·제목 확정";
+}
+@if (!string.IsNullOrWhiteSpace(Model.Keyword))
+{
+    <div class="kl-alert is-info" role="status">선택한 키워드: <strong>@Model.Keyword</strong></div>
+}
+<partial name="_Upcoming" model="@(new KeywordLab.Web.Pages.Shared.UpcomingModel(2, "템플릿 생성 + 규칙 점수 → Codex로", "주제·제목 확정", "플랫폼별 추천 제목을 고르고 Codex에 넘길 입력 블록을 복사합니다."))" />

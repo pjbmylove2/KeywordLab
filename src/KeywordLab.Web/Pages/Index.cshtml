@@ -1,0 +1,6 @@
+@page
+@model IndexModel
+@{
+    ViewData["Title"] = "오늘의 이슈 키워드";
+}
+<partial name="_Upcoming" model="@(new KeywordLab.Web.Pages.Shared.UpcomingModel(3, "구글 실시간 인기 + 네이버 검색량", "오늘의 이슈 키워드", "새로 등장한 키워드를 점수순으로 보여줍니다. 자동 수집기가 연결되면 이 화면이 시작 화면이 됩니다."))" />

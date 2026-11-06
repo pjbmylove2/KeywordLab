@@ -1,0 +1,10 @@
+@page
+@model SettingsModel
+@{
+    ViewData["Title"] = "설정";
+}
+@if (!string.IsNullOrWhiteSpace(Model.Keyword))
+{
+    <div class="kl-alert is-info" role="status">선택한 키워드: <strong>@Model.Keyword</strong></div>
+}
+<partial name="_Upcoming" model="@(new KeywordLab.Web.Pages.Shared.UpcomingModel(3, "블로그별 규칙", "설정", "블로그별 허용 카테고리와 제목 금지 표현을 관리합니다."))" />

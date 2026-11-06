@@ -1,0 +1,53 @@
+@{
+    var current = ViewContext.RouteData.Values["page"] as string ?? string.Empty;
+    string Nav(string page) => string.Equals(current, page, StringComparison.OrdinalIgnoreCase) ? "kl-nav is-active" : "kl-nav";
+    string? Current(string page) => string.Equals(current, page, StringComparison.OrdinalIgnoreCase) ? "page" : null;
+}
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>@ViewData["Title"] · 키워드 랩</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700;800&family=Nanum+Gothic+Coding:wght@400;700&display=swap" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body>
+    <a class="kl-skip" href="#kl-main">본문 바로가기</a>
+    <header class="kl-header">
+        <div class="kl-header-inner">
+            <a class="kl-logo" href="/">
+                <span class="kl-logo-mark">K&gt;_</span>
+                <span>키워드 랩</span>
+            </a>
+            <span class="kl-chip">주제·제목 정하는 곳 · 본문은 Codex</span>
+        </div>
+    </header>
+
+    <div class="kl-shell">
+        <nav class="kl-side" aria-label="주요 메뉴">
+            <div class="kl-nav-group">
+                <span class="kl-nav-title">찾기</span>
+                <a class="@Nav("/Index")" aria-current="@Current("/Index")" href="/">오늘의 이슈 키워드</a>
+                <a class="@Nav("/Trend")" aria-current="@Current("/Trend")" href="/Trend">트렌드 보기</a>
+                <a class="@Nav("/Lookup")" aria-current="@Current("/Lookup")" href="/Lookup">키워드 직접 조회</a>
+            </div>
+            <div class="kl-nav-group">
+                <span class="kl-nav-title">정하기</span>
+                <a class="@Nav("/Titles")" aria-current="@Current("/Titles")" href="/Titles">주제·제목 확정</a>
+            </div>
+            <div class="kl-nav-group">
+                <span class="kl-nav-title">관리</span>
+                <a class="@Nav("/Settings")" aria-current="@Current("/Settings")" href="/Settings">설정</a>
+            </div>
+        </nav>
+
+        <main id="kl-main" class="kl-main">
+            @RenderBody()
+        </main>
+    </div>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

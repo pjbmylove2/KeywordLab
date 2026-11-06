@@ -1,0 +1,15 @@
+@page
+@model ErrorModel
+@{
+    ViewData["Title"] = "오류";
+}
+<section class="kl-section">
+    <div class="kl-head">
+        <h1 class="kl-h1">처리 중 오류가 발생했습니다</h1>
+        <p class="kl-lead">잠시 후 다시 시도하세요. 계속되면 Visual Studio 출력 창의 로그를 확인하세요.</p>
+        @if (Model.ShowRequestId)
+        {
+            <p class="kl-mono kl-muted">요청 ID: @Model.RequestId</p>
+        }
+    </div>
+</section>
