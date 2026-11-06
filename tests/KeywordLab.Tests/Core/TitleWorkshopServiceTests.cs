@@ -6,8 +6,19 @@ namespace KeywordLab.Tests.Core;
 
 public class TitleWorkshopServiceTests
 {
-    private static TitleWorkshopService Service(FakeVolumeProvider volumes, FakeBlogProvider blog) =>
-        new(volumes, blog, new TemplateTitleGenerator(), new TitleScorer(), new FixedTimeProvider(new DateTimeOffset(2026, 11, 6, 9, 0, 0, TimeSpan.Zero)));
+    private static TitleWorkshopService Service(FakeVolumeProvider volumes, FakeBlogProvider blog, FakeAutocomplete? autocomplete = null) =>
+        new(volumes, blog, autocomplete ?? new FakeAutocomplete(), new TemplateTitleGenerator(), new TitleScorer(), new FixedTimeProvider(new DateTimeOffset(2026, 11, 6, 9, 0, 0, TimeSpan.Zero)));
+
+    [Fact]
+    public async Task Autocomplete_intents_come_before_related_intents()
+    {
+        var volumes = new FakeVolumeProvider(V.Of("전기요금", 5610, 8590), V.Of("전기요금할인", 1310, 580));
+        var autocomplete = new FakeAutocomplete(new() { ["전기요금"] = ["전기요금 조회", "한전 전기요금", "전기요금 할인"] });
+
+        var w = await Service(volumes, new FakeBlogProvider(new()), autocomplete).PrepareAsync("전기요금", null, BlogPlatform.Naver);
+
+        Assert.Equal(["조회", "할인"], w.IntentKeywords);
+    }
 
     [Fact]
     public async Task Prepares_volume_documents_intents_and_ranked_titles()
