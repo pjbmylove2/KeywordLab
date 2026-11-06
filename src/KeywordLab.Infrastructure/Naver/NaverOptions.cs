@@ -26,13 +26,14 @@ public sealed class NaverSearchAdOptions
 }
 
 /// <summary>
-/// 네이버 개발자센터 검색 API 설정 (developers.naver.com → 애플리케이션 등록, 사용 API: 검색).
+/// NAVER API HUB 검색 API 설정 (네이버 클라우드 콘솔 → NAVER API HUB → Application 등록, 사용 API: 검색 - 블로그).
+/// 개발자센터(developers.naver.com) 키는 API HUB에서 쓸 수 없다.
 /// </summary>
 public sealed class NaverOpenApiOptions
 {
     public const string SectionName = "Naver:OpenApi";
 
-    public string BaseUrl { get; set; } = "https://openapi.naver.com";
+    public string BaseUrl { get; set; } = "https://naverapihub.apigw.ntruss.com";
 
     public string ClientId { get; set; } = string.Empty;
 

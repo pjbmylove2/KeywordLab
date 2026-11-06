@@ -5,7 +5,7 @@ using KeywordLab.Core.Models;
 
 namespace KeywordLab.Infrastructure.Naver;
 
-/// <summary>/v1/search/blog.json 응답 파싱. 제목의 &lt;b&gt; 강조 태그와 HTML 엔티티를 정리한다.</summary>
+/// <summary>API HUB /search/v1/blog 응답 파싱. 제목의 &lt;b&gt; 강조 태그와 HTML 엔티티를 정리한다.</summary>
 public static partial class BlogSearchResponseParser
 {
     public static BlogSearchSummary Parse(string json)

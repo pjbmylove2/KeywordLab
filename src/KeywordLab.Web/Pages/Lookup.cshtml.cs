@@ -63,7 +63,7 @@ public class LookupModel : PageModel
             ErrorMessage = ex.StatusCode switch
             {
                 HttpStatusCode.Unauthorized or HttpStatusCode.Forbidden =>
-                    $"{ex.Api}: 인증에 실패했습니다. 사용자 비밀의 키 값을 확인하세요. 블로그 검색이라면 네이버 개발자센터 애플리케이션의 사용 API에 '검색'이 들어 있는지도 확인하세요.",
+                    $"{ex.Api}: 인증에 실패했습니다. 사용자 비밀의 키 값을 확인하세요. 블로그 검색이라면 NAVER API HUB Application에서 받은 Client ID·Secret인지(개발자센터 키는 안 됨), 사용 API에 '검색 - 블로그'가 들어 있는지도 확인하세요.",
                 HttpStatusCode.TooManyRequests =>
                     $"{ex.Api}: 호출 한도를 넘었습니다. 잠시 후 다시 조회하세요.",
                 HttpStatusCode.BadRequest =>

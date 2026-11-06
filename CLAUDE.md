@@ -48,5 +48,8 @@ tests/KeywordLab.Tests         xUnit
 - 검색광고 `/keywordstool`: 힌트 키워드는 **공백을 빼고** 한 번에 최대 5개. 응답 키워드도 공백이 없다.
   검색 수가 10 미만이면 숫자 대신 `"< 10"` 문자열이 온다 (`VolumeCount.IsUnderTen`).
   서명: `Base64(HMAC-SHA256(SecretKey, "{timestampMs}.GET./keywordstool"))`, 경로에 쿼리 문자열 제외.
-- 블로그 검색 `/v1/search/blog.json`: `total`이 경쟁 문서 수. 제목에 `<b>` 태그가 섞여 온다.
+- 블로그 검색은 NAVER API HUB: `GET https://naverapihub.apigw.ntruss.com/search/v1/blog`,
+  헤더 `X-NCP-APIGW-API-KEY-ID`(Client ID) / `X-NCP-APIGW-API-KEY`(Client Secret). 개발자센터 키·`openapi.naver.com`은 쓰지 않는다.
+  `total`이 경쟁 문서 수. 제목에 `<b>` 태그가 섞여 온다.
+- 검색광고 API는 API HUB 대상이 아니다. 기존 HMAC 방식(키 3개) 그대로.
 - 호출 한도가 있으므로 블로그 검색은 검색량 상위 후보 일부만 호출한다 (`KeywordLookupService.MaxBlogLookups`).

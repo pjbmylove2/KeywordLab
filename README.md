@@ -10,7 +10,8 @@
 - Visual Studio 2022 (워크로드: "ASP.NET 및 웹 개발")
 - .NET 8 SDK
 - 네이버 검색광고 API 키: searchad.naver.com 로그인 → 도구 → API 사용 관리 (CUSTOMER_ID, 엑세스라이선스, 비밀키)
-- 네이버 검색 API 키: developers.naver.com → 애플리케이션 등록 → 사용 API에 "검색" 추가 (Client ID, Client Secret)
+- 네이버 검색 API 키: 네이버 클라우드 콘솔 → NAVER API HUB → Application 등록 → 사용 API에 "검색 - 블로그" 추가 (Client ID, Client Secret).
+  개발자센터(developers.naver.com)에서 받은 키는 API HUB에서 쓸 수 없습니다.
 
 ## 사용자 비밀 설정 (키 넣기)
 

@@ -4,7 +4,7 @@ using Microsoft.Extensions.Options;
 
 namespace KeywordLab.Infrastructure.Naver;
 
-/// <summary>네이버 검색 API 블로그 검색 클라이언트. 문서 수(total)와 상위 글 제목을 가져온다.</summary>
+/// <summary>NAVER API HUB 블로그 검색 클라이언트. 문서 수(total)와 상위 글 제목을 가져온다.</summary>
 public sealed class NaverBlogSearchClient : IBlogSearchProvider
 {
     private readonly HttpClient _http;
@@ -29,11 +29,11 @@ public sealed class NaverBlogSearchClient : IBlogSearchProvider
         }
 
         var size = Math.Clamp(display, 1, 100);
-        var url = $"{_options.BaseUrl.TrimEnd('/')}/v1/search/blog.json?query={Uri.EscapeDataString(query)}&display={size}&sort=sim";
+        var url = $"{_options.BaseUrl.TrimEnd('/')}/search/v1/blog?query={Uri.EscapeDataString(query)}&display={size}&sort=sim";
 
         using var request = new HttpRequestMessage(HttpMethod.Get, url);
-        request.Headers.Add("X-Naver-Client-Id", _options.ClientId);
-        request.Headers.Add("X-Naver-Client-Secret", _options.ClientSecret);
+        request.Headers.Add("X-NCP-APIGW-API-KEY-ID", _options.ClientId);
+        request.Headers.Add("X-NCP-APIGW-API-KEY", _options.ClientSecret);
 
         using var response = await _http.SendAsync(request, cancellationToken).ConfigureAwait(false);
         if (!response.IsSuccessStatusCode)
