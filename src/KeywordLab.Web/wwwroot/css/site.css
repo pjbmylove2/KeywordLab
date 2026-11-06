@@ -129,3 +129,13 @@ a:hover { color: var(--accent-hover); text-decoration: underline; }
   .kl-h1 { font-size: 24px; }
   .kl-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
+
+/* 주제·제목 확정 (2단계) */
+.kl-tabs { display: flex; gap: 8px; margin: 0 0 8px; }
+.kl-tab { padding: 8px 16px; border: 1px solid var(--line); border-radius: 8px; color: var(--text2); text-decoration: none; font-weight: 700; }
+.kl-tab:hover { border-color: var(--accent); color: var(--accent); }
+.kl-tab.is-active { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
+.kl-textarea { display: block; width: 100%; box-sizing: border-box; margin: 6px 0 0; padding: 10px 14px; border: 1px solid var(--line); border-radius: 8px; background: var(--bg); color: var(--text); font: inherit; resize: vertical; }
+.kl-textarea.kl-mono { font-family: var(--mono); font-size: 13px; background: var(--code-bg); color: var(--code-text); }
+.kl-reasons { display: flex; flex-wrap: wrap; gap: 4px; }
+.kl-chip.is-minus { color: var(--muted); }

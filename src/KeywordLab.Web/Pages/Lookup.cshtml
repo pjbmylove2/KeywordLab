@@ -75,7 +75,7 @@
                         }
                         <div class="kl-card-actions">
                             <a class="kl-btn" href="/Trend?kw=@Uri.EscapeDataString(c.Keyword)">트렌드</a>
-                            <a class="kl-btn kl-btn-primary" href="/Titles?kw=@Uri.EscapeDataString(c.Keyword)">제목 정하기</a>
+                            <a class="kl-btn kl-btn-primary" href="/Titles?kw=@Uri.EscapeDataString(c.Keyword)&topic=@Uri.EscapeDataString(result.Topic)">제목 정하기</a>
                         </div>
                     </article>
                 }
