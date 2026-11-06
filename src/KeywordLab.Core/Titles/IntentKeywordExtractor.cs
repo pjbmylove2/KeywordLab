@@ -48,5 +48,45 @@ public static class IntentKeywordExtractor
         return result;
     }
 
+    /// <summary>
+    /// 자동완성어에서 의도 키워드를 뽑는다. "전기요금 조회"처럼 메인 키워드 뒤에 띄어 쓴 말이 의도다.
+    /// 뽑은 것은 <paramref name="existing"/> 뒤에 붙이지 않고 앞에 둔다 (자동완성이 실제 검색 습관에 더 가깝다).
+    /// </summary>
+    public static IReadOnlyList<string> Merge(string mainKeyword, IEnumerable<string> autocomplete, IReadOnlyList<string> existing, int max = TemplateTitleGenerator.MaxIntentKeywords)
+    {
+        ArgumentNullException.ThrowIfNull(mainKeyword);
+        ArgumentNullException.ThrowIfNull(autocomplete);
+        ArgumentNullException.ThrowIfNull(existing);
+
+        var main = Text.KeywordNormalizer.Tidy(mainKeyword);
+        var result = new List<string>();
+        foreach (var s in autocomplete)
+        {
+            var suggestion = Text.KeywordNormalizer.Tidy(s ?? string.Empty);
+            if (!suggestion.StartsWith(main + " ", StringComparison.OrdinalIgnoreCase))
+            {
+                continue;
+            }
+
+            var tail = suggestion[(main.Length + 1)..];
+            if (RemoveSpaces(tail).Length is 0 or > MaxIntentLength || result.Contains(tail, StringComparer.OrdinalIgnoreCase))
+            {
+                continue;
+            }
+
+            result.Add(tail);
+        }
+
+        foreach (var e in existing)
+        {
+            if (!result.Contains(e, StringComparer.OrdinalIgnoreCase))
+            {
+                result.Add(e);
+            }
+        }
+
+        return result.Take(Math.Max(max, 0)).ToList();
+    }
+
     private static string RemoveSpaces(string s) => new(s.Where(c => !char.IsWhiteSpace(c)).ToArray());
 }

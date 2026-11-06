@@ -1,6 +1,101 @@
 @page
+@using KeywordLab.Core.Titles
 @model IndexModel
 @{
     ViewData["Title"] = "오늘의 이슈 키워드";
+    var blog = Model.Blog;
+    var platform = blog is null ? "tistory" : TitlesModel.PlatformValueOf(blog.Platform);
 }
-<partial name="_Upcoming" model="@(new KeywordLab.Web.Pages.Shared.UpcomingModel(3, "구글 실시간 인기 + 네이버 검색량", "오늘의 이슈 키워드", "새로 등장한 키워드를 점수순으로 보여줍니다. 자동 수집기가 연결되면 이 화면이 시작 화면이 됩니다."))" />
+<section class="kl-section">
+    <div class="kl-head">
+        <span class="kl-eyebrow">// 구글 실시간 인기 + 네이버 검색량</span>
+        <h1 class="kl-h1">오늘의 이슈 키워드</h1>
+        <p class="kl-lead">구글 트렌드에 새로 뜬 키워드를 모아 점수순으로 보여줍니다. 점수 = 수요 × 경과 시간 가중치 × 문서 수 보정. 화면을 열 때마다 새로 수집합니다.</p>
+    </div>
+
+    @if (Model.Blogs.Count > 0)
+    {
+        <nav class="kl-tabs" aria-label="블로그">
+            @for (var i = 0; i < Model.Blogs.Count; i++)
+            {
+                var b = Model.Blogs[i];
+                <a class="kl-tab @(i == Model.BlogIndex ? "is-active" : null)" href="/?blog=@i" aria-current="@(i == Model.BlogIndex ? "page" : null)">@b.Name</a>
+            }
+        </nav>
+        @if (blog is not null)
+        {
+            <p class="kl-muted">허용 카테고리: @string.Join(", ", blog.Categories.Select(c => c.Name)). 카테고리 밖 키워드는 흐리게 표시합니다. (카테고리 단어는 appsettings.json "Blogs"에서 고칩니다)</p>
+        }
+    }
+
+    @if (Model.ErrorMessage is not null)
+    {
+        <div class="kl-alert is-error" role="alert">@Model.ErrorMessage</div>
+    }
+
+    @if (Model.Board is { } board)
+    {
+        @if (board.CollectError is not null)
+        {
+            <div class="kl-alert is-error" role="alert">구글 트렌드 RSS를 받지 못해 전에 모아 둔 키워드로 보여줍니다. 인터넷 연결을 확인한 뒤 새로 고치세요. (@board.CollectError)</div>
+        }
+        else
+        {
+            <p class="kl-muted">이번에 수집한 키워드 @(board.Collected)개 · 최근 @(Model.WindowHours)시간 안에 등장한 키워드 중 상위 @(board.Keywords.Count)개</p>
+        }
+
+        @if (board.Keywords.Count == 0)
+        {
+            <div class="kl-empty"><p>아직 모인 키워드가 없습니다. 잠시 후 새로 고치세요.</p></div>
+        }
+        else
+        {
+            <div class="kl-grid">
+                @foreach (var k in board.Keywords)
+                {
+                    var category = Model.CategoryOf(k);
+                    var outside = blog is not null && category is null;
+                    <article class="kl-card @(outside ? "is-dim" : null)">
+                        <span class="kl-tag @(outside ? "is-low" : "is-good")">@(category ?? (blog is null ? "카테고리 미설정" : "카테고리 밖"))</span>
+                        <h3 class="kl-card-title">@k.Keyword</h3>
+                        <dl class="kl-stats">
+                            <div><dt>점수</dt><dd class="kl-mono">@k.Score.Score.ToString("N0")</dd></div>
+                            <div><dt>등장</dt><dd>@IndexModel.AgeText(k.Score.AgeHours)</dd></div>
+                            <div><dt>블로그 문서</dt><dd class="kl-mono">@k.BlogDocuments.ToString("N0")</dd></div>
+                        </dl>
+                        <p class="kl-reason">
+                            수요: @IndexModel.DemandText(k) ·
+                            네이버 월검색 @(k.Volume?.TotalDisplay ?? "없음") ·
+                            시간 가중치 @k.Score.TimeWeight.ToString("0.00") · 문서 보정 @k.Score.DocFactor.ToString("0.00")
+                        </p>
+                        @if (k.Autocomplete.Count > 0)
+                        {
+                            <p class="kl-reasons">
+                                @foreach (var a in k.Autocomplete.Take(5))
+                                {
+                                    <span class="kl-chip">@a</span>
+                                }
+                            </p>
+                        }
+                        @if (k.Trend.News.Count > 0)
+                        {
+                            <div class="kl-competitors">
+                                <span class="kl-small-title">관련 뉴스 (검증 전)</span>
+                                <ol>
+                                    @foreach (var n in k.Trend.News.Take(2))
+                                    {
+                                        <li><a href="@n.Url" target="_blank" rel="noopener noreferrer">@n.Title</a> <span class="kl-muted">@n.Source</span></li>
+                                    }
+                                </ol>
+                            </div>
+                        }
+                        <div class="kl-card-actions">
+                            <a class="kl-btn" href="/Lookup?q=@Uri.EscapeDataString(k.Keyword)">조회</a>
+                            <a class="kl-btn kl-btn-primary" href="/Titles?kw=@Uri.EscapeDataString(k.Keyword)&topic=@Uri.EscapeDataString(k.Keyword)&platform=@platform">제목 정하기</a>
+                        </div>
+                    </article>
+                }
+            </div>
+        }
+    }
+</section>

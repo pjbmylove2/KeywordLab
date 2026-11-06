@@ -20,7 +20,7 @@ public sealed record TitleWorkshop(
     IReadOnlyList<ScoredTitle> Ranked);
 
 /// <summary>
-/// "주제·제목 확정" 흐름: 메인 키워드의 검색량·연관 키워드·문서 수 조회 → 의도 키워드 추출 → 제목 생성 → 플랫폼 규칙 점수.
+/// "주제·제목 확정" 흐름: 메인 키워드의 검색량·연관 키워드·문서 수·자동완성 조회 → 의도 키워드 추출 → 제목 생성 → 플랫폼 규칙 점수.
 /// </summary>
 public sealed class TitleWorkshopService
 {
@@ -31,6 +31,7 @@ public sealed class TitleWorkshopService
 
     private readonly IKeywordVolumeProvider _volumes;
     private readonly IBlogSearchProvider _blog;
+    private readonly IAutocompleteProvider _autocomplete;
     private readonly ITitleGenerator _generator;
     private readonly TitleScorer _scorer;
     private readonly TimeProvider _time;
@@ -38,12 +39,14 @@ public sealed class TitleWorkshopService
     public TitleWorkshopService(
         IKeywordVolumeProvider volumes,
         IBlogSearchProvider blog,
+        IAutocompleteProvider autocomplete,
         ITitleGenerator generator,
         TitleScorer scorer,
         TimeProvider time)
     {
         _volumes = volumes;
         _blog = blog;
+        _autocomplete = autocomplete;
         _generator = generator;
         _scorer = scorer;
         _time = time;
@@ -61,9 +64,11 @@ public sealed class TitleWorkshopService
 
         var volumesTask = _volumes.GetVolumesAsync([kw], cancellationToken);
         var blogTask = _blog.SearchAsync(kw, 1, cancellationToken);
-        await Task.WhenAll(volumesTask, blogTask).ConfigureAwait(false);
+        var suggestTask = _autocomplete.SuggestAsync(kw, cancellationToken);
+        await Task.WhenAll(volumesTask, blogTask, suggestTask).ConfigureAwait(false);
         var volumes = await volumesTask.ConfigureAwait(false);
         var blog = await blogTask.ConfigureAwait(false);
+        var suggestions = await suggestTask.ConfigureAwait(false);
 
         var compact = KeywordNormalizer.Compact(kw);
         var main = volumes.FirstOrDefault(v => KeywordNormalizer.Compact(v.Keyword) == compact);
@@ -72,7 +77,7 @@ public sealed class TitleWorkshopService
             .OrderByDescending(v => v.TotalApprox)
             .ToList();
 
-        var intents = IntentKeywordExtractor.Extract(kw, related);
+        var intents = IntentKeywordExtractor.Merge(kw, suggestions, IntentKeywordExtractor.Extract(kw, related));
         var today = Today;
         var request = new TitleRequest(kw, intents, today);
         var candidates = await _generator.GenerateAsync(request, cancellationToken).ConfigureAwait(false);

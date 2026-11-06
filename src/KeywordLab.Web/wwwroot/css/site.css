@@ -139,3 +139,5 @@ a:hover { color: var(--accent-hover); text-decoration: underline; }
 .kl-textarea.kl-mono { font-family: var(--mono); font-size: 13px; background: var(--code-bg); color: var(--code-text); }
 .kl-reasons { display: flex; flex-wrap: wrap; gap: 4px; }
 .kl-chip.is-minus { color: var(--muted); }
+.kl-card.is-dim { opacity: 0.5; }
+.kl-card.is-dim:hover { opacity: 1; }
