@@ -24,7 +24,7 @@
         </nav>
         @if (blog is not null)
         {
-            <p class="kl-muted">허용 카테고리: @string.Join(", ", blog.Categories.Select(c => c.Name)). 카테고리 밖 키워드는 흐리게 표시합니다. (카테고리 단어는 appsettings.json "Blogs"에서 고칩니다)</p>
+            <p class="kl-muted">허용 카테고리: @string.Join(", ", blog.Categories.Select(c => c.Name)). 카테고리 밖 키워드는 흐리게 표시합니다. (카테고리 단어는 <a href="/Settings">설정</a>에서 고칩니다)</p>
         }
     }
 

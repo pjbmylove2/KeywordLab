@@ -3,34 +3,34 @@ using KeywordLab.Core.Trends;
 using KeywordLab.Infrastructure.Naver;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using KeywordLab.Core.Abstractions;
 using Microsoft.Data.Sqlite;
-using Microsoft.Extensions.Options;
 
 namespace KeywordLab.Web.Pages;
 
 public class IndexModel : PageModel
 {
     private readonly IssueKeywordService _issues;
-    private readonly BlogOptions _blogs;
+    private readonly BlogProfile[] _blogs;
     private readonly ILogger<IndexModel> _logger;
 
-    public IndexModel(IssueKeywordService issues, IssueKeywordScorer scorer, IOptions<BlogOptions> blogs, ILogger<IndexModel> logger)
+    public IndexModel(IssueKeywordService issues, IssueKeywordScorer scorer, ISettingsStore settings, ILogger<IndexModel> logger)
     {
         _issues = issues;
-        _blogs = blogs.Value;
+        _blogs = settings.Load().Settings.Blogs;
         _logger = logger;
         WindowHours = scorer.Rules.WindowHours;
     }
 
     public double WindowHours { get; }
 
-    /// <summary>appsettings.json "Blogs:Items"의 순번.</summary>
+    /// <summary>설정 화면 블로그 목록의 순번.</summary>
     [BindProperty(SupportsGet = true, Name = "blog")]
     public int BlogIndex { get; set; }
 
-    public IReadOnlyList<BlogProfile> Blogs => _blogs.Items;
+    public IReadOnlyList<BlogProfile> Blogs => _blogs;
 
-    public BlogProfile? Blog => BlogIndex >= 0 && BlogIndex < _blogs.Items.Length ? _blogs.Items[BlogIndex] : null;
+    public BlogProfile? Blog => BlogIndex >= 0 && BlogIndex < _blogs.Length ? _blogs[BlogIndex] : null;
 
     public IssueBoard? Board { get; private set; }
 

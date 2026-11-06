@@ -141,3 +141,9 @@ a:hover { color: var(--accent-hover); text-decoration: underline; }
 .kl-chip.is-minus { color: var(--muted); }
 .kl-card.is-dim { opacity: 0.5; }
 .kl-card.is-dim:hover { opacity: 1; }
+
+/* 설정 (3-2단계) */
+.kl-fieldset { margin: 0 0 12px; border: 1px solid var(--line); display: flex; flex-direction: column; gap: 10px; }
+.kl-field-row { display: flex; flex-wrap: wrap; gap: 10px; }
+.kl-field-row label { display: flex; flex-direction: column; flex: 1 1 200px; gap: 4px; }
+.kl-field-row .kl-input { flex: none; width: 100%; box-sizing: border-box; }

@@ -33,14 +33,16 @@ src/KeywordLab.Core            순수 로직. 외부 의존성 없음.
   Models/                      VolumeCount, KeywordVolume, BlogSearchSummary
   Text/                        KeywordNormalizer, CandidateGenerator (조사 제거 + 단어 조합)
   Assessment/                  CompetitionAssessor, AssessmentRules (경쟁도 기준값)
-  Abstractions/                IKeywordVolumeProvider, IBlogSearchProvider, ITitleGenerator(교체 가능), IHandoffLog, ITrendFeed, IAutocompleteProvider, ITrendStore
+  Abstractions/                IKeywordVolumeProvider, IBlogSearchProvider, ITitleGenerator(교체 가능), IHandoffLog, ITrendFeed, IAutocompleteProvider, ITrendStore, ISettingsStore
+  Settings/                    LabSettings(설정 화면 값), SettingsText(카테고리 줄 글 ↔ 설정값)
   Titles/                      TemplateTitleGenerator, TitleScorer(플랫폼별 규칙 점수), IntentKeywordExtractor, CodexBlockBuilder
   Trends/                      IssueKeywordScorer(자동 모드 점수), CategoryMatcher(블로그별 허용 카테고리 단어 판별)
   Services/                    KeywordLookupService (키워드 직접 조회), TitleWorkshopService (주제·제목 확정), IssueKeywordService (오늘의 이슈 키워드)
 src/KeywordLab.Infrastructure  외부 API 연동
   Naver/                       검색광고 API(HMAC 서명), 블로그 검색 API, 응답 파서
   Trends/                      GoogleTrendsRssClient, NaverAutocompleteClient(비공식, 실패 시 빈 목록)
-  Storage/                     SqliteHandoffLog, SqliteTrendStore (넘긴 기록·수집한 트렌드, %LOCALAPPDATA%\KeywordLab\keywordlab.db)
+  Storage/                     SqliteHandoffLog, SqliteTrendStore (넘긴 기록·수집한 트렌드, %LOCALAPPDATA%\KeywordLab\keywordlab.db),
+                               JsonSettingsStore (설정 화면 값, 같은 폴더 settings.json. 없으면 appsettings.json 기본값)
 src/KeywordLab.Web             Razor Pages 화면
 tests/KeywordLab.Tests         xUnit
 ```
